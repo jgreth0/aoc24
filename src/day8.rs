@@ -95,3 +95,32 @@ fn count_antinodes(input: &str, extend: bool) -> u64 {
     }
     return antinodes.len() as u64;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    static TEST_INPUT: &str = "\
+        ............\n\
+        ........0...\n\
+        .....0......\n\
+        .......0....\n\
+        ....0.......\n\
+        ......A.....\n\
+        ............\n\
+        ............\n\
+        ........A...\n\
+        .........A..\n\
+        ............\n\
+        ............";
+
+    #[test]
+    fn test_part1() {
+        assert_eq!(14, part1(TEST_INPUT));
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(34, part2(TEST_INPUT));
+    }
+}

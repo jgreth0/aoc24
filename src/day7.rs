@@ -104,3 +104,29 @@ fn has_solution3(res: u64, vals: &[u64]) -> bool {
     }
     return false;
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    static TEST_INPUT: &str = "\
+        190: 10 19\n\
+        3267: 81 40 27\n\
+        83: 17 5\n\
+        156: 15 6\n\
+        7290: 6 8 6 15\n\
+        161011: 16 10 13\n\
+        192: 17 8 14\n\
+        21037: 9 7 18 13\n\
+        292: 11 6 16 20";
+
+    #[test]
+    fn test_part1() {
+        assert_eq!(3749, part1(TEST_INPUT));
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(11387, part2(TEST_INPUT));
+    }
+}
