@@ -6,5 +6,6 @@ extern crate aoc_runner_derive;
 pub mod day7;
 pub mod day8;
 pub mod day9;
+pub mod day10;
 
 aoc_lib!{ year = 2024 }
