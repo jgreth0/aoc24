@@ -4,40 +4,28 @@
 use std::collections::HashMap;
 
 fn blink(counts: HashMap<u64, u64>) -> HashMap<u64, u64> {
-    let mut new_counts: HashMap<u64, u64> = HashMap::new();
+    // Each stone splits at most once per blink, so this is guaranteed to never
+    // resize.
+    let mut new_counts: HashMap<u64, u64> = HashMap::with_capacity(counts.len() * 2);
     for (&key, &value) in counts.iter() {
         if key == 0 {
-            if !new_counts.contains_key(&1) {
-                new_counts.insert(1, 0);
-            }
-            *new_counts.get_mut(&1).unwrap() += value;
+            let count = new_counts.entry(1).or_insert(0);
+            *count += value;
             continue;
         }
 
         // Check if the key has an even number of digits.
-        let log: f64 = (key as f64).log10();
-        if log % 2.0 >= 1.0 {
-            let digits: u32 = log.trunc() as u32 + 1;
-            assert_eq!(digits % 2, 0);
-            let digits = digits / 2;
-            let cut = (10 as u64).pow(digits);
-            let new_key = key / cut;
-            if !new_counts.contains_key(&new_key) {
-                new_counts.insert(new_key, 0);
-            }
-            *new_counts.get_mut(&new_key).unwrap() += value;
-            let new_key = key % cut;
-            if !new_counts.contains_key(&new_key) {
-                new_counts.insert(new_key, 0);
-            }
-            *new_counts.get_mut(&new_key).unwrap() += value;
-
+        let log: u32 = key.ilog10();
+        if log % 2 == 1 {
+            let digits: u32 = (log + 1) / 2;
+            let cut = u32::pow(10, digits) as u64;
+            let count = new_counts.entry(key / cut).or_insert(0);
+            *count += value;
+            let count = new_counts.entry(key % cut).or_insert(0);
+            *count += value;
         } else {
-            let new_key = key * 2024;
-            if !new_counts.contains_key(&new_key) {
-                new_counts.insert(new_key, 0);
-            }
-            *new_counts.get_mut(&new_key).unwrap() += value;
+            let count = new_counts.entry(key * 2024).or_insert(0);
+            *count += value;
         }
     }
     return new_counts;
@@ -45,13 +33,10 @@ fn blink(counts: HashMap<u64, u64>) -> HashMap<u64, u64> {
 
 fn blinks(iters: u32, input: &str) -> u64 {
     // counts maps a stone engraving to a frequency for that engraving.
-    let mut counts: HashMap<u64, u64> = HashMap::new();
+    let mut counts: HashMap<u64, u64> = HashMap::with_capacity(10);
     for word in input.split_whitespace() {
-        let num = word.parse::<u64>().unwrap();
-        if !counts.contains_key(&num) {
-            counts.insert(num, 0);
-        }
-        *counts.get_mut(&num).unwrap() += 1;
+        let count = counts.entry(word.parse::<u64>().unwrap()).or_insert(0);
+        *count += 1;
     }
     for _ in 0..iters {
         counts = blink(counts);
