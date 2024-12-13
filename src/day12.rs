@@ -5,8 +5,10 @@ use std::collections::LinkedList;
 
 #[aoc(day12, part1)]
 pub fn part1(input: &str) -> u64 {
+    // TODO: make a shared function with a part1/part2 select.
     let input: Vec<Vec<u8>> = input.lines().map(|line| line.as_bytes().to_vec()).collect();
     let mut seen: Vec<Vec<bool>> = vec![vec![false; input[0].len()]; input.len()];
+    // A work queue for finding all the entries in a blob.
     let mut queue: LinkedList<(i32, i32)> = LinkedList::new();
     let mut total = 0;
 
@@ -15,18 +17,26 @@ pub fn part1(input: &str) -> u64 {
             let b = input[i][j];
             let mut perimeter = 0;
             let mut area = 0;
+            // seed the work queue.
             queue.push_back((i as i32, j as i32));
             while let Some((k, l)) = queue.pop_front() {
                 if k < 0 || k >= input.len() as i32 || l < 0 || l >= input[0].len() as i32 {
+                    // if an out of bounds neighbor was added to the work queue,
+                    // it means that whatever caused this to be added had a perimiter on this edge.
                     perimeter += 1;
                     continue;
                 }
                 let (ku, lu) = (k as usize, l as usize);
                 if input[ku][lu] != b {
+                    // Whatever caused this to be added had a perimiter on this edge.
                     perimeter += 1;
                     continue;
                 }
                 if seen[ku][lu] {
+                    // If the first entry in the search was already seen,
+                    // this continue will hit on the first iteration through 
+                    // the work queue. Below, the total will be incremented by 0,
+                    // so here is no double counting.
                     continue;
                 }
                 seen[ku][lu] = true;
@@ -46,6 +56,7 @@ pub fn part1(input: &str) -> u64 {
 pub fn part2(input: &str) -> u64 {
     let input: Vec<Vec<u8>> = input.lines().map(|line| line.as_bytes().to_vec()).collect();
     let mut seen: Vec<Vec<bool>> = vec![vec![false; input[0].len()]; input.len()];
+    // A work queue for finding all the entries in a blob.
     let mut queue: LinkedList<(usize, usize)> = LinkedList::new();
     let mut total = 0;
 
@@ -54,14 +65,22 @@ pub fn part2(input: &str) -> u64 {
             let b = input[i][j];
             let mut perimeter = 0;
             let mut area = 0;
+            // seed the work queue.
             queue.push_back((i, j));
             while let Some((k, l)) = queue.pop_front() {
                 if seen[k][l] {
+                    // If the first entry in the search was already seen,
+                    // this continue will hit on the first iteration through 
+                    // the work queue. Below, the total will be incremented by 0,
+                    // so here is no double counting.
                     continue;
                 }
                 seen[k][l] = true;
                 area += 1;
+                
+                // Count corners instead of edges.
 
+                // Look up
                 if k == 0 {
                     if l == 0 {
                         perimeter += 1; // Map corner
@@ -80,6 +99,7 @@ pub fn part2(input: &str) -> u64 {
                     }
                 }
 
+                // Look down
                 if k == input.len()-1 {
                     if l == 0 {
                         perimeter += 1; // Map corner
@@ -98,6 +118,7 @@ pub fn part2(input: &str) -> u64 {
                     }
                 }
 
+                // Look left
                 if l == 0 {
                     if k == 0 {
                         perimeter += 1; // Map corner
@@ -106,7 +127,7 @@ pub fn part2(input: &str) -> u64 {
                     }
                 } else {
                     if input[k][l-1] == b {
-                        queue.push_back((k, l-1)); // Fikk
+                        queue.push_back((k, l-1)); // Fill
                     } else if k == 0 {
                         perimeter += 1; // Convex corner
                     } else if input[k-1][l] != b {
@@ -116,6 +137,7 @@ pub fn part2(input: &str) -> u64 {
                     }
                 }
 
+                // Look right
                 if l == input.len()-1 {
                     if k == 0 {
                         perimeter += 1; // Map corner
@@ -124,7 +146,7 @@ pub fn part2(input: &str) -> u64 {
                     }
                 } else {
                     if input[k][l+1] == b {
-                        queue.push_back((k, l+1)); // Fikk
+                        queue.push_back((k, l+1)); // Fill
                     } else if k == 0 {
                         perimeter += 1; // Convex corner
                     } else if input[k-1][l] != b {
