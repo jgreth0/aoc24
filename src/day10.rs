@@ -207,6 +207,8 @@ mod tests {
         assert_eq!( 4, part1(TEST_INPUT_C));
         assert_eq!( 3, part1(TEST_INPUT_D));
         assert_eq!(36, part1(TEST_INPUT_E));
+
+        assert_eq!(816, part1(include_str!("../input/2024/day10.txt")));
     }
 
     #[test]
@@ -215,5 +217,7 @@ mod tests {
         assert_eq!( 13, part2(TEST_INPUT_G));
         assert_eq!(227, part2(TEST_INPUT_H));
         assert_eq!( 81, part2(TEST_INPUT_E));
+
+        assert_eq!(1960, part2(include_str!("../input/2024/day10.txt")));
     }
 }

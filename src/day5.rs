@@ -145,10 +145,14 @@ mod tests {
     #[test]
     fn test_part1() {
         assert_eq!(143, part1(TEST_INPUT));
+
+        assert_eq!(4774, part1(include_str!("../input/2024/day5.txt")));
     }
 
     #[test]
     fn test_part2() {
         assert_eq!(123, part2(TEST_INPUT));
+
+        assert_eq!(6004, part2(include_str!("../input/2024/day5.txt")));
     }
 }

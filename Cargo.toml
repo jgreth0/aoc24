@@ -1,6 +1,6 @@
 [package]
 name = "aoc24"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["John Greth <jgreth0@gmail.com>"]
 edition = "2021"
 

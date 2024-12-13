@@ -123,10 +123,14 @@ mod tests {
     #[test]
     fn test_part1() {
         assert_eq!(3749, part1(TEST_INPUT));
+
+        assert_eq!(5512534574980, part1(include_str!("../input/2024/day7.txt")));
     }
 
     #[test]
     fn test_part2() {
         assert_eq!(11387, part2(TEST_INPUT));
+
+        assert_eq!(328790210468594, part2(include_str!("../input/2024/day7.txt")));
     }
 }

@@ -64,10 +64,14 @@ mod tests {
     fn test_part1() {
         assert_eq!(22, blinks(6, TEST_INPUT));
         assert_eq!(55312, part1(TEST_INPUT));
+
+        assert_eq!(186996, part1(include_str!("../input/2024/day11.txt")));
     }
 
     #[test]
     fn test_part2() {
         assert_eq!(blinks(75, TEST_INPUT), part2(TEST_INPUT));
+
+        assert_eq!(221683913164898, part2(include_str!("../input/2024/day11.txt")));
     }
 }
