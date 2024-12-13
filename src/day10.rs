@@ -17,6 +17,7 @@ pub fn part1(input: &str) -> u64 {
     // distance and on the correct checkerboard color. This means that only a
     // relatively small bit vector is required for each point (<128 bits
     // optimally or up less than 512 in a convenient layout).
+    #[allow(clippy::type_complexity)]
     let mut grid: Vec<Vec<(u8, HashSet<(usize, usize)>)>> = input.trim_ascii_end().lines().map(|line| {
         line.as_bytes().iter().map(|b| {
             (*b, HashSet::new())
@@ -34,29 +35,21 @@ pub fn part1(input: &str) -> u64 {
                     continue;
                 }
                 
-                if x > 0 {
-                    if grid[y][x-1].0 == pass + 1 {
-                        let c = grid[y][x-1].1.clone();
-                        grid[y][x].1.extend(c);
-                    }
+                if x > 0 && grid[y][x-1].0 == pass + 1 {
+                    let c = grid[y][x-1].1.clone();
+                    grid[y][x].1.extend(c);
                 }
-                if x + 1 < grid[y].len() {
-                    if grid[y][x+1].0 == pass + 1 {
-                        let c = grid[y][x+1].1.clone();
-                        grid[y][x].1.extend(c);
-                    }
+                if x + 1 < grid[y].len() && grid[y][x+1].0 == pass + 1 {
+                    let c = grid[y][x+1].1.clone();
+                    grid[y][x].1.extend(c);
                 }
-                if y > 0 {
-                    if grid[y-1][x].0 == pass + 1 {
-                        let c = grid[y-1][x].1.clone();
-                        grid[y][x].1.extend(c);
-                    }
+                if y > 0 && grid[y-1][x].0 == pass + 1 {
+                    let c = grid[y-1][x].1.clone();
+                    grid[y][x].1.extend(c);
                 }
-                if y + 1 < grid.len() {
-                    if grid[y+1][x].0 == pass + 1 {
-                        let c = grid[y+1][x].1.clone();
-                        grid[y][x].1.extend(c);
-                    }
+                if y + 1 < grid.len() && grid[y+1][x].0 == pass + 1 {
+                    let c = grid[y+1][x].1.clone();
+                    grid[y][x].1.extend(c);
                 }
                 
                 if pass == b'0' {
@@ -66,7 +59,7 @@ pub fn part1(input: &str) -> u64 {
         }
     }
 
-    return total;
+    total
 }
 
 #[aoc(day10, part2)]
@@ -92,29 +85,21 @@ pub fn part2(input: &str) -> u64 {
                     continue;
                 }
                 
-                if x > 0 {
-                    if grid[y][x-1].0 == pass + 1 {
-                        let c = grid[y][x-1].1;
-                        grid[y][x].1 += c;
-                    }
+                if x > 0 && grid[y][x-1].0 == pass + 1 {
+                    let c = grid[y][x-1].1;
+                    grid[y][x].1 += c;
                 }
-                if x + 1 < grid[y].len() {
-                    if grid[y][x+1].0 == pass + 1 {
-                        let c = grid[y][x+1].1;
-                        grid[y][x].1 += c;
-                    }
+                if x + 1 < grid[y].len() && grid[y][x+1].0 == pass + 1 {
+                    let c = grid[y][x+1].1;
+                    grid[y][x].1 += c;
                 }
-                if y > 0 {
-                    if grid[y-1][x].0 == pass + 1 {
-                        let c = grid[y-1][x].1;
-                        grid[y][x].1 += c;
-                    }
+                if y > 0 && grid[y-1][x].0 == pass + 1 {
+                    let c = grid[y-1][x].1;
+                    grid[y][x].1 += c;
                 }
-                if y + 1 < grid.len() {
-                    if grid[y+1][x].0 == pass + 1 {
-                        let c = grid[y+1][x].1;
-                        grid[y][x].1 += c;
-                    }
+                if y + 1 < grid.len() && grid[y+1][x].0 == pass + 1 {
+                    let c = grid[y+1][x].1;
+                    grid[y][x].1 += c;
                 }
                 
                 if pass == b'0' {
@@ -124,7 +109,7 @@ pub fn part2(input: &str) -> u64 {
         }
     }
 
-    return total;
+    total
 }
 
 #[cfg(test)]

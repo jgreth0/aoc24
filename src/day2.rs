@@ -3,7 +3,7 @@
 
 fn is_valid_line_with_skip(line: &str, skip_pos: i32) -> bool {
     // Split the input string into words and try to parse each word as an integer
-    let mut words = line.split_whitespace();
+    let words = line.split_whitespace();
     let mut all_ascending = true;
     let mut all_descending = true;
     let mut all_in_range = true;
@@ -11,7 +11,7 @@ fn is_valid_line_with_skip(line: &str, skip_pos: i32) -> bool {
     let mut last_number = 0;
     let mut current_pos = -1;
     
-    while let Some(word) = words.next() {
+    for word in words {
         if let Ok(number) = word.parse::<i32>() {
             current_pos += 1;
             if current_pos == skip_pos {
@@ -30,7 +30,7 @@ fn is_valid_line_with_skip(line: &str, skip_pos: i32) -> bool {
             }
             let mut diff = number - last_number;
             diff = diff.abs();
-            if diff < 1 || diff > 3 {
+            if !(1..=3).contains(&diff) {
                 all_in_range = false;
             }
             last_number = number;
@@ -63,7 +63,7 @@ pub fn part1(input: &str) -> u64 {
             total += 1;
         }
     }
-    return total;
+    total
 }
 
 #[aoc(day2, part2)]
@@ -79,7 +79,7 @@ pub fn part2(input: &str) -> u64 {
             total += 1;
         }
     }
-    return total;
+    total
 }
 
 #[cfg(test)]

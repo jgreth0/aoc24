@@ -49,7 +49,7 @@ pub fn part1(input: &str) -> u64 {
             total += area * perimeter;
         }
     }
-    return total;
+    total
 }
 
 #[aoc(day12, part2)]
@@ -81,85 +81,81 @@ pub fn part2(input: &str) -> u64 {
                 // Count corners instead of edges.
 
                 // Look up
+                #[allow(clippy::if_same_then_else)]
                 if k == 0 {
                     if l == 0 {
                         perimeter += 1; // Map corner
                     } else if input[k][l-1] != b {
                         perimeter += 1; // Convex corner
                     }
-                } else {
-                    if input[k-1][l] == b {
-                        queue.push_back((k-1, l)); // Fill
-                    } else if l == 0 {
-                        perimeter += 1; // Convex corner
-                    } else if input[k][l-1] != b {
-                        perimeter += 1; // Convex corner
-                    } else if input[k-1][l-1] == b {
-                        perimeter += 1; // Concave corner
-                    }
+                } else if input[k-1][l] == b {
+                    queue.push_back((k-1, l)); // Fill
+                } else if l == 0 {
+                    perimeter += 1; // Convex corner
+                } else if input[k][l-1] != b {
+                    perimeter += 1; // Convex corner
+                } else if input[k-1][l-1] == b {
+                    perimeter += 1; // Concave corner
                 }
 
                 // Look down
+                #[allow(clippy::if_same_then_else)]
                 if k == input.len()-1 {
                     if l == 0 {
                         perimeter += 1; // Map corner
                     } else if input[k][l-1] != b {
                         perimeter += 1; // Convex corner
                     }
-                } else {
-                    if input[k+1][l] == b {
-                        queue.push_back((k+1, l)); // Fill
-                    } else if l == 0 {
-                        perimeter += 1; // Convex corner
-                    } else if input[k][l-1] != b {
-                        perimeter += 1; // Convex corner
-                    } else if input[k+1][l-1] == b {
-                        perimeter += 1; // Concave corner
-                    }
+                } else if input[k+1][l] == b {
+                    queue.push_back((k+1, l)); // Fill
+                } else if l == 0 {
+                    perimeter += 1; // Convex corner
+                } else if input[k][l-1] != b {
+                    perimeter += 1; // Convex corner
+                } else if input[k+1][l-1] == b {
+                    perimeter += 1; // Concave corner
                 }
 
                 // Look left
+                #[allow(clippy::if_same_then_else)]
                 if l == 0 {
                     if k == 0 {
                         perimeter += 1; // Map corner
                     } else if input[k-1][l] != b {
                         perimeter += 1; // Convex corner
                     }
-                } else {
-                    if input[k][l-1] == b {
-                        queue.push_back((k, l-1)); // Fill
-                    } else if k == 0 {
-                        perimeter += 1; // Convex corner
-                    } else if input[k-1][l] != b {
-                        perimeter += 1; // Convex corner
-                    } else if input[k-1][l-1] == b {
-                        perimeter += 1; // Concave corner
-                    }
+                } else if input[k][l-1] == b {
+                    queue.push_back((k, l-1)); // Fill
+                } else if k == 0 {
+                    perimeter += 1; // Convex corner
+                } else if input[k-1][l] != b {
+                    perimeter += 1; // Convex corner
+                } else if input[k-1][l-1] == b {
+                    perimeter += 1; // Concave corner
                 }
 
                 // Look right
+                #[allow(clippy::if_same_then_else)]
                 if l == input.len()-1 {
                     if k == 0 {
                         perimeter += 1; // Map corner
                     } else if input[k-1][l] != b {
                         perimeter += 1; // Convex corner
                     }
-                } else {
-                    if input[k][l+1] == b {
-                        queue.push_back((k, l+1)); // Fill
-                    } else if k == 0 {
-                        perimeter += 1; // Convex corner
-                    } else if input[k-1][l] != b {
-                        perimeter += 1; // Convex corner
-                    } else if input[k-1][l+1] == b {
-                        perimeter += 1; // Concave corner
-                    }
+                } else if input[k][l+1] == b {
+                    queue.push_back((k, l+1)); // Fill
+                } else if k == 0 {
+                    perimeter += 1; // Convex corner
+                } else if input[k-1][l] != b {
+                    perimeter += 1; // Convex corner
+                } else if input[k-1][l+1] == b {
+                    perimeter += 1; // Concave corner
                 }
             }
             total += area * perimeter;
         }
     }
-    return total;
+    total
 }
 
 #[cfg(test)]

@@ -48,11 +48,12 @@ fn walk_length(obstacles: &HashSet<(i32, i32)>,
         }
     }
 
-    return 0;
+    0
 }
 
 // TODO: The input is parsed into a Set of obstacles and some metadata. A
 // bit-vector would probably be substantially more efficient.
+#[allow(clippy::type_complexity)]
 fn parse_input(input: &str) -> (HashSet<(i32, i32)>, (i32, i32), (i32, i32)) {
     let mut obstacles: HashSet<(i32, i32)> = HashSet::with_capacity(1000);
 
@@ -89,7 +90,7 @@ fn parse_input(input: &str) -> (HashSet<(i32, i32)>, (i32, i32), (i32, i32)) {
         }
         bounds.1 += 1;
     }
-    return (obstacles, guard_pos, bounds);
+    (obstacles, guard_pos, bounds)
 }
 
 #[aoc(day6, part1)]
@@ -98,7 +99,7 @@ pub fn part1(input: &str) -> u64 {
 
     let mut guards: Option<HashSet<(i32, i32)>> = Some(HashSet::with_capacity(5000));
     walk_length(&obstacles, &(-1, -1), &bounds, &guard_pos, &mut guards);
-    return guards.unwrap().len() as u64;
+    guards.unwrap().len() as u64
 }
 
 #[aoc(day6, part2)]
@@ -108,15 +109,15 @@ pub fn part2(input: &str) -> u64 {
     let mut guards: Option<HashSet<(i32, i32)>> = Some(HashSet::with_capacity(5000));
     walk_length(&obstacles, &(-1, -1), &bounds, &guard_pos, &mut guards);
 
-    return guards.unwrap().par_iter().map(|guard| -> u64 {
+    guards.unwrap().par_iter().map(|guard| -> u64 {
         if *guard == guard_pos {
             return 0;
         }
         // TODO: This replays the full walk for each possible guard pos. Instead
         // consider starting from the point in the original walk where the new
         // guard position was first considered.
-        return walk_length(&obstacles, guard, &bounds, &guard_pos, &mut None);
-    }).sum();
+        walk_length(&obstacles, guard, &bounds, &guard_pos, &mut None)
+    }).sum()
 }
 
 #[cfg(test)]

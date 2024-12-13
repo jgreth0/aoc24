@@ -27,10 +27,10 @@ pub fn part1(input: &str) -> u64 {
 
     for (a, b) in vec1.iter().zip(vec2.iter()) {
         let diff = a - b; // Calculate the difference between the two integers
-        total += diff.abs() as u64; // Add the difference to the total
+        total += diff.unsigned_abs() as u64; // Add the difference to the total
     }
 
-    return total;
+    total
 }
 
 #[aoc(day1, part2)]
@@ -69,7 +69,7 @@ pub fn part2(input: &str) -> u64 {
             total += (key * val) as u64;
         }
     }
-    return total;
+    total
 }
 
 #[cfg(test)]

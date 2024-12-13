@@ -71,12 +71,12 @@ fn parse_do<I: Iterator<Item = char>>(iter: &mut Peekable<I>) -> Option<bool> {
     }
     if let Some(c) = iter.peek() {
         if *c == ')' {
-            return Some(false);
+            Some(false)
         } else {
-            return None;
+            None
         }
     } else {
-        return None;
+        None
     }
 }
 
@@ -197,12 +197,12 @@ fn parse_mul<I: Iterator<Item = char>>(iter: &mut Peekable<I>) -> u32 {
     }
     if let Some(c) = iter.peek() {
         if *c == ')' {
-            return a * b;
+            a * b
         } else {
-            return 0;
+            0
         }
     } else {
-        return 0;
+        0
     }
 }
 
@@ -212,13 +212,13 @@ pub fn part1(input: &str) -> u32 {
 
     for line in input.lines() {
         let mut iter = line.chars().peekable();
-        while let Some(_) = iter.peek() {
+        while iter.peek().is_some() {
             let adder = parse_mul(&mut iter);
             total += adder;
             iter.next();
         }
     }
-    return total;
+    total
 }
 
 #[aoc(day3, part2)]
@@ -228,7 +228,7 @@ pub fn part2(input: &str) -> u32 {
 
     for line in input.lines() {
         let mut iter = line.chars().peekable();
-        while let Some(_) = iter.peek() {
+        while iter.peek().is_some() {
             if let Some(mode) = parse_do(&mut iter) {
                 do_mode = mode;
             }
@@ -239,7 +239,7 @@ pub fn part2(input: &str) -> u32 {
             iter.next();
         }
     }
-    return total;
+    total
 }
 
 #[cfg(test)]

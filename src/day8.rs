@@ -5,12 +5,12 @@ use std::collections::{HashMap,HashSet};
 
 #[aoc(day8, part1)]
 pub fn part1(input: &str) -> u64 {
-    return count_antinodes(input, false);
+    count_antinodes(input, false)
 }
 
 #[aoc(day8, part2)]
 pub fn part2(input: &str) -> u64 {
-    return count_antinodes(input, true);
+    count_antinodes(input, true)
 }
 
 fn count_antinodes(input: &str, extend: bool) -> u64 {
@@ -25,19 +25,17 @@ fn count_antinodes(input: &str, extend: bool) -> u64 {
             if *b != b'.' {
                 // Store the position of each antenna, grouped by ID. This will
                 // allow for efficient processing later.
-                antennas.entry(*b).or_insert_with(Vec::new).push((row, col));
+                antennas.entry(*b).or_default().push((row, col));
             }
             col += 1;
-        } else {
-            if col != 0 {
-                if width == 0 {
-                    width = col;
-                } else {
-                    assert_eq!(col, width);
-                }
-                col = 0;
-                row += 1;
+        } else if col != 0 {
+            if width == 0 {
+                width = col;
+            } else {
+                assert_eq!(col, width);
             }
+            col = 0;
+            row += 1;
         }
     }
     // If whitespace is trimmed by the runner (it is), the loop above doesn't
@@ -93,7 +91,7 @@ fn count_antinodes(input: &str, extend: bool) -> u64 {
             }
         }
     }
-    return antinodes.len() as u64;
+    antinodes.len() as u64
 }
 
 #[cfg(test)]
