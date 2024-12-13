@@ -94,7 +94,7 @@ fn get_total(input: &str, part2: bool) -> i64 {
         }
     }
         
-    return total.iter().sum();
+    total.iter().sum()
 }
 
 #[aoc(day13, part1)]

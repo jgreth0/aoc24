@@ -17,13 +17,13 @@ pub fn part1(input: &str) -> u64 {
             for dx in [-1, 0, 1] {
                 for dy in [-1, 0, 1] {
                     let mut hit = true;
-                    for i in 0..xmas.len() {
+                    for (i, xc) in xmas.iter().enumerate() {
                         let tx = usize::try_from((x as i32) + dx * (i as i32));
                         let ty = usize::try_from((y as i32) + dy * (i as i32));
                         if let (Ok(txu), Ok(tyu)) = (tx, ty) {
                             if let Some(v2) = vec.get(txu) {
                                 if let Some(c) = v2.get(tyu) {
-                                    if *c != xmas[i] {
+                                    if *c != *xc {
                                         hit = false;
                                     }
                                 } else {
@@ -44,7 +44,7 @@ pub fn part1(input: &str) -> u64 {
             }
         }
     }
-    return total;
+    total
 }
 
 #[aoc(day4, part2)]
@@ -63,13 +63,13 @@ pub fn part2(input: &str) -> u64 {
             for dx in [-1, 1] {
                 for dy in [-1, 1] {
                     let mut hit = true;
-                    for i in 0..mas.len() {
+                    for (i, mc) in mas.iter().enumerate() {
                         let tx = usize::try_from((x as i32) + dx * (i as i32));
                         let ty = usize::try_from((y as i32) + dy * (i as i32));
                         if let (Ok(txu), Ok(tyu)) = (tx, ty) {
                             if let Some(v2) = vec.get(txu) {
                                 if let Some(c) = v2.get(tyu) {
-                                    if *c != mas[i] {
+                                    if *c != *mc {
                                         hit = false;
                                     }
                                 } else {
@@ -82,7 +82,7 @@ pub fn part2(input: &str) -> u64 {
                             hit = false;
                         }
                     }
-                    for i in 0..mas.len() {
+                    for (i, mc) in mas.iter().enumerate() {
                         let mut xi = i as i32;
                         let mut yi = i as i32;
                         if dx == dy {
@@ -96,7 +96,7 @@ pub fn part2(input: &str) -> u64 {
                         if let (Ok(txu), Ok(tyu)) = (tx, ty) {
                             if let Some(v2) = vec.get(txu) {
                                 if let Some(c) = v2.get(tyu) {
-                                    if *c != mas[i] {
+                                    if *c != *mc {
                                         hit = false;
                                     }
                                 } else {
@@ -116,7 +116,7 @@ pub fn part2(input: &str) -> u64 {
             }
         }
     }
-    return total;
+    total
 }
 
 #[cfg(test)]

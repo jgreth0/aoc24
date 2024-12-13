@@ -28,7 +28,7 @@ fn blink(counts: HashMap<u64, u64>) -> HashMap<u64, u64> {
             *count += value;
         }
     }
-    return new_counts;
+    new_counts
 }
 
 fn blinks(iters: u32, input: &str) -> u64 {
@@ -41,17 +41,17 @@ fn blinks(iters: u32, input: &str) -> u64 {
     for _ in 0..iters {
         counts = blink(counts);
     }
-    return counts.values().sum::<u64>();
+    counts.values().sum::<u64>()
 }
 
 #[aoc(day11, part1)]
 pub fn part1(input: &str) -> u64 {
-    return blinks(25, input);
+    blinks(25, input)
 }
 
 #[aoc(day11, part2)]
 pub fn part2(input: &str) -> u64 {
-    return blinks(75, input);
+    blinks(75, input)
 }
 
 #[cfg(test)]

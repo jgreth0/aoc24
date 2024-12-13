@@ -22,7 +22,7 @@ pub fn part1(input: &str) -> u64 {
             total += res;
         }
     }
-    return total;
+    total
 }
 
 #[aoc(day7, part2)]
@@ -48,45 +48,39 @@ pub fn part2(input: &str) -> u64 {
             total += res;
         }
     }
-    return total;
+    total
 }
 
 // TODO: Merge into has_solution3
 // TODO: Move res into vals[0]
 // TODO: Return res or 0 instead of bool
 fn has_solution2(res: u64, vals: &[u64]) -> bool {
-    assert!(vals.len() > 0);
+    assert!(!vals.is_empty());
     assert!(res > 0);
     assert!(vals[vals.len()-1] > 0);
 
     if vals.len() == 1 {
         return res == vals[0];
     }
-    if res % vals[vals.len()-1] == 0 {
-        if has_solution2(res / vals[vals.len()-1], &vals[0..vals.len()-1]) {
-            return true;
-        }
+    if res % vals[vals.len()-1] == 0 && has_solution2(res / vals[vals.len()-1], &vals[0..vals.len()-1]) {
+        return true;
     }
-    if res > vals[vals.len()-1] {
-        if has_solution2(res - vals[vals.len()-1], &vals[0..vals.len()-1]) {
-            return true;
-        }
+    if res > vals[vals.len()-1] && has_solution2(res - vals[vals.len()-1], &vals[0..vals.len()-1]) {
+        return true;
     }
-    return false;
+    false
 }
 
 fn has_solution3(res: u64, vals: &[u64]) -> bool {
-    assert!(vals.len() > 0);
+    assert!(!vals.is_empty());
     assert!(res > 0);
     assert!(vals[vals.len()-1] > 0);
 
     if vals.len() == 1 {
         return res == vals[0];
     }
-    if res % vals[vals.len()-1] == 0 {
-        if has_solution3(res / vals[vals.len()-1], &vals[0..vals.len()-1]) {
-            return true;
-        }
+    if res % vals[vals.len()-1] == 0 && has_solution3(res / vals[vals.len()-1], &vals[0..vals.len()-1]) {
+        return true;
     }
     if res > vals[vals.len()-1] {
         if has_solution3(res - vals[vals.len()-1], &vals[0..vals.len()-1]) {
@@ -95,14 +89,14 @@ fn has_solution3(res: u64, vals: &[u64]) -> bool {
         // TODO: This can be done without converting to strings
         let vs = vals[vals.len()-1].to_string();
         let rs = res.to_string();
-        if (&rs).ends_with(&vs) {
+        if rs.ends_with(&vs) {
             let new_rs = rs[..rs.len()-vs.len()].parse::<u64>().unwrap();
             if has_solution3(new_rs, &vals[0..vals.len()-1]) {
                 return true;
             }
         }
     }
-    return false;
+    false
 }
 
 #[cfg(test)]

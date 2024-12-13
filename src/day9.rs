@@ -73,7 +73,7 @@ pub fn part1(input: &str) -> u64 {
         }
     }
 
-    return total;
+    total
 }
 
 #[aoc(day9, part2)]
@@ -113,7 +113,7 @@ pub fn part2(input: &str) -> u64 {
         total += (id as u32 * consume_sum) as u64;
     }
 
-    return total;
+    total
 }
 
 #[cfg(test)]
