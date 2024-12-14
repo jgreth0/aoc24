@@ -3,6 +3,7 @@ name = "aoc24"
 version = "0.1.9"
 authors = ["John Greth <jgreth0@gmail.com>"]
 edition = "2021"
+license = "Apache-2.0"
 
 [lib]
 bench = false
