@@ -166,8 +166,6 @@ unsafe fn quad_prod_vec(input: &str, xb: i32, yb: i32) -> u64 {
     let total_64 = total_64 + process_line(input, line_starts, xb, yb, xbd2, ybd2, count-1, true);
 
     // Get separate values for the 4 quadrants and multiply them together.
-    
-
     ((total_64 >> 48) & 0xffff) *
         ((total_64 >> 32) & 0xffff) *
         ((total_64 >> 16) & 0xffff) *
@@ -185,6 +183,9 @@ fn quad_prod_vec_slow(input: &str, xb: i32, yb: i32) -> u64 {
         let mut vy: i32 = 0;
         sscanf!(line, "p={i32},{i32} v={i32},{i32}", px, py, vx, vy).unwrap();
 
+        // Parsing is done. Now use (px, py, vx, vy) to calculate the final
+        // position (npx, npy)
+
         let npx = (px + (vx * 100)) % xb;
         let npx_pxb = npx + xb;
         let npx = if npx < 0 { npx_pxb } else { npx };
@@ -197,9 +198,14 @@ fn quad_prod_vec_slow(input: &str, xb: i32, yb: i32) -> u64 {
         let q3: u64 = if npx < xbd2 && npy > ybd2 { 1 } else { 0 };
         let q4: u64 = if npx > xbd2 && npy > ybd2 { 1 } else { 0 };
 
+        // Store the quadrant selection in a u64 for efficiency. These can be
+        // summed up without fear that values will roll over into another
+        // quadrant because the total bots is ~500, well below 2^16 to cause a
+        // rollover.
         (q1 << 48) + (q2 << 32) + (q3 << 16) + q4
     }).sum();
 
+    // Get separate values for the 4 quadrants and multiply them together.
     ((total_64 >> 48) & 0xffff) *
         ((total_64 >> 32) & 0xffff) *
         ((total_64 >> 16) & 0xffff) *
