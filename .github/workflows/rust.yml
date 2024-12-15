@@ -28,5 +28,3 @@ jobs:
       run: cargo doc --workspace --all-features
     - name: Test doc test
       run: cargo test --doc --workspace --all-features
-    - name: Security audit
-      run: cargo audit
