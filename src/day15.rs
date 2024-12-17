@@ -267,6 +267,7 @@ impl std::fmt::Display for Grid {
         Ok(())
     }
 }
+
 #[aoc(day15, part1)]
 pub fn part1(input: &str) -> u64 {
     let mut lines = input.lines();
