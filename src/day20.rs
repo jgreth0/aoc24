@@ -1,5 +1,5 @@
 
-// https://adventofcode.com/2024/day/18
+// https://adventofcode.com/2024/day/20
 
 use std::collections::BinaryHeap;
 
@@ -126,39 +126,27 @@ impl Eq for PathNode {}
 struct Grid {
     cells: Vec<Vec<Cell>>,
     start_pos: (usize, usize),
+    path: Vec<(usize, usize, i32)>,
 }
 
 impl Grid {
-    fn from(input: &str, count: usize, dim: usize) -> Self {
-        let mut cells: Vec<Vec<Cell>> = Vec::with_capacity(dim+2);
-
-        let start_pos = (1, 1);
-        let end_pos = (dim, dim);
-        cells.push(vec![Cell::from(b'#'); dim+2]);
-        for _ in 0..dim {
-            let mut row: Vec<Cell> = Vec::with_capacity(dim+2);
-            row.push(Cell::from(b'#'));
-            for _ in 0..dim {
-                row.push(Cell::from(b'.'));
+    fn from(input: &str) -> Self {
+        let mut cells: Vec<Vec<Cell>> = Vec::with_capacity(141);
+        let mut start_pos = (0, 0);
+        for line in input.lines() {
+            let mut row = Vec::with_capacity(141);
+            for b in line.bytes() {
+                if b == b'S' {
+                    start_pos = (cells.len(), row.len());
+                }
+                row.push(Cell::from(b));
             }
-            row.push(Cell::from(b'#'));
             cells.push(row);
         }
-        cells.push(vec![Cell::from(b'#'); dim+2]);
-        for (i, line) in input.lines().enumerate() {
-            if i >= count {
-                break;
-            }
-            let mut parsed = line.split(",").map(|s| s.parse::<usize>());
-            let x = parsed.next().unwrap().expect("parse error");
-            let y =  parsed.next().unwrap().expect("parse error");
-            cells[y+1][x+1] = Cell::from(b'#');
-        }
-        cells[start_pos.0][start_pos.1] = Cell::from(b'S');
-        cells[  end_pos.0][  end_pos.1] = Cell::from(b'E');
         Grid {
             cells,
             start_pos,
+            path: Vec::new(),
         }
     }
 
@@ -174,6 +162,7 @@ impl Grid {
             let cell = self.cells.get_mut(node.pos.0).unwrap().get_mut(node.pos.1).unwrap();
             match cell {
                 Cell::End(c) => {
+                    self.path.push((node.pos.0, node.pos.1, node.cost));
                     c.cost = node.cost;
                     return Some(node.cost);
                 },
@@ -184,6 +173,7 @@ impl Grid {
                         continue;
                     }
                     m.set_cost(node.cost);
+                    self.path.push((node.pos.0, node.pos.1, node.cost));
                     queue.push(node.advanced_up());
                     queue.push(node.advanced_down());
                     queue.push(node.advanced_left());
@@ -194,55 +184,103 @@ impl Grid {
         None
     }
 
-    // Binary search for the blocking wall.
-    fn find_blocker(input: &str, dim: usize) -> String {
-        let mut blocker_min = dim-2;
-        let mut blocker_max = input.lines().count()-1;
-        loop {
-            if blocker_min == blocker_max {
-                break;
-            }
-            let blocker = blocker_min + (blocker_max - blocker_min) / 2;
-            if Grid::from(input, blocker, dim).bfs().is_none() {
-                blocker_max = blocker;
-            } else {
-                blocker_min = blocker + 1
+    // Check each pair of points in the path and count the pairs that are within
+    // the maximum distance and provide at least the required savings for
+    // cheating.
+    // TODO: Try searching by proximity. For path-length N, this algo is O(N^2).
+    // Searching by proximity would be O(N*max_distance^2), which might be
+    // better especially for part 1 where max_distance is small.
+    fn find_cheats(&self, min_savings: i32, max_distance: usize) -> u32 {
+        let mut count = 0;
+        for i in 0..self.path.len() {
+            for j in 0.. self.path.len() {
+                if i == j {
+                    break;
+                }
+                let (sx, sy, sc) = self.path[j];
+                let (ex, ey, ec) = self.path[i];
+                let dist = ey.abs_diff(sy) + ex.abs_diff(sx);
+                if dist <= max_distance && sc + (dist as i32) + min_savings <= ec {
+                    count += 1;
+                }
             }
         }
-        input.lines().nth(blocker_min-1).unwrap().to_string()
+        count
+    }
+
+    fn get_cheat_count(input: &str, min_savings: i32, max_distance: usize) -> u32 {
+        let mut grid = Grid::from(input);
+        grid.bfs();
+        grid.find_cheats(min_savings, max_distance)
     }
 }
 
-#[aoc(day18, part1)]
-pub fn part1(input: &str) -> i32 {
-    Grid::from(input, 1024, 71).bfs().unwrap()
+#[aoc(day20, part1)]
+pub fn part1(input: &str) -> u32 {
+    Grid::get_cheat_count(input, 100, 2)
 }
 
-#[aoc(day18, part2)]
-pub fn part2(input: &str) -> String {
-    Grid::find_blocker(input, 71)
+#[aoc(day20, part2)]
+pub fn part2(input: &str) -> u32 {
+    Grid::get_cheat_count(input, 100, 20)
 }
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    static TEST_INPUT_A: &str = "\
-        5,4\n4,2\n4,5\n3,0\n2,1\n6,3\n2,4\n1,5\n0,6\n3,3\n2,6\n5,1\n1,2\n\
-        5,5\n2,5\n6,5\n1,4\n0,4\n6,4\n1,1\n6,1\n1,0\n0,5\n1,6\n2,0";
+    static TEST_INPUT: &str = "\
+        ###############\n\
+        #...#...#.....#\n\
+        #.#.#.#.#.###.#\n\
+        #S#...#.#.#...#\n\
+        #######.#.#.###\n\
+        #######.#.#...#\n\
+        #######.#.###.#\n\
+        ###..E#...#...#\n\
+        ###.#######.###\n\
+        #...###...#...#\n\
+        #.#####.#.###.#\n\
+        #.#...#.#.#...#\n\
+        #.#.#.#.#.#.###\n\
+        #...#...#...###\n\
+        ###############";
 
     #[test]
     fn test_part1() {
-        assert_eq!(22, Grid::from(TEST_INPUT_A, 12, 7).bfs().unwrap());
+        assert_eq!(44, Grid::get_cheat_count(TEST_INPUT,  2, 2));
+        assert_eq!(30, Grid::get_cheat_count(TEST_INPUT,  4, 2));
+        assert_eq!(16, Grid::get_cheat_count(TEST_INPUT,  6, 2));
+        assert_eq!(14, Grid::get_cheat_count(TEST_INPUT,  8, 2));
+        assert_eq!(10, Grid::get_cheat_count(TEST_INPUT, 10, 2));
+        assert_eq!( 8, Grid::get_cheat_count(TEST_INPUT, 12, 2));
+        assert_eq!( 5, Grid::get_cheat_count(TEST_INPUT, 20, 2));
+        assert_eq!( 4, Grid::get_cheat_count(TEST_INPUT, 36, 2));
+        assert_eq!( 3, Grid::get_cheat_count(TEST_INPUT, 38, 2));
+        assert_eq!( 2, Grid::get_cheat_count(TEST_INPUT, 40, 2));
+        assert_eq!( 1, Grid::get_cheat_count(TEST_INPUT, 64, 2));
 
-        assert_eq!(374, part1(include_str!("../input/2024/day18.txt")));
+        assert_eq!(1321, part1(include_str!("../input/2024/day20.txt")));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!("6,1", Grid::find_blocker(TEST_INPUT_A, 7));
 
-        assert_eq!("30,12", part2(include_str!("../input/2024/day18.txt")));
+        assert_eq!(285, Grid::get_cheat_count(TEST_INPUT, 50, 20));
+        assert_eq!(253, Grid::get_cheat_count(TEST_INPUT, 52, 20));
+        assert_eq!(222, Grid::get_cheat_count(TEST_INPUT, 54, 20));
+        assert_eq!(193, Grid::get_cheat_count(TEST_INPUT, 56, 20));
+        assert_eq!(154, Grid::get_cheat_count(TEST_INPUT, 58, 20));
+        assert_eq!(129, Grid::get_cheat_count(TEST_INPUT, 60, 20));
+        assert_eq!(106, Grid::get_cheat_count(TEST_INPUT, 62, 20));
+        assert_eq!( 86, Grid::get_cheat_count(TEST_INPUT, 64, 20));
+        assert_eq!( 67, Grid::get_cheat_count(TEST_INPUT, 66, 20));
+        assert_eq!( 55, Grid::get_cheat_count(TEST_INPUT, 68, 20));
+        assert_eq!( 41, Grid::get_cheat_count(TEST_INPUT, 70, 20));
+        assert_eq!( 29, Grid::get_cheat_count(TEST_INPUT, 72, 20));
+        assert_eq!(  7, Grid::get_cheat_count(TEST_INPUT, 74, 20));
+        assert_eq!(  3, Grid::get_cheat_count(TEST_INPUT, 76, 20));
+
+        assert_eq!(971737, part2(include_str!("../input/2024/day20.txt")));
     }
 }
