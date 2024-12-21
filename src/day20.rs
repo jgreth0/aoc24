@@ -2,6 +2,7 @@
 // https://adventofcode.com/2024/day/20
 
 use std::collections::BinaryHeap;
+use rayon::prelude::*;
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 struct MinPath{
@@ -191,21 +192,18 @@ impl Grid {
     // Searching by proximity would be O(N*max_distance^2), which might be
     // better especially for part 1 where max_distance is small.
     fn find_cheats(&self, min_savings: i32, max_distance: usize) -> u32 {
-        let mut count = 0;
-        for i in 0..self.path.len() {
-            for j in 0.. self.path.len() {
-                if i == j {
-                    break;
-                }
+        (1..self.path.len()).into_par_iter().map(|i| {
+            let (ex, ey, ec) = self.path[i];
+            (0..i).map(|j| {
                 let (sx, sy, sc) = self.path[j];
-                let (ex, ey, ec) = self.path[i];
                 let dist = ey.abs_diff(sy) + ex.abs_diff(sx);
                 if dist <= max_distance && sc + (dist as i32) + min_savings <= ec {
-                    count += 1;
+                    1
+                } else {
+                    0
                 }
-            }
-        }
-        count
+            }).sum::<u32>()
+        }).sum()
     }
 
     fn get_cheat_count(input: &str, min_savings: i32, max_distance: usize) -> u32 {
